@@ -517,6 +517,7 @@ GameObject:
   - component: {fileID: 158617804}
   - component: {fileID: 158617806}
   - component: {fileID: 158617805}
+  - component: {fileID: 158617807}
   m_Layer: 8
   m_Name: "\u0438\u0433\u0440\u043E\u043A \u043A\u043E\u0437\u0430"
   m_TagString: Player
@@ -592,7 +593,7 @@ Transform:
   m_GameObject: {fileID: 158617798}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.35964, y: -2.48596, z: 10}
+  m_LocalPosition: {x: 0.107, y: 0.476, z: 10}
   m_LocalScale: {x: 0.06259766, y: 0.0855139, z: 0.015306023}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -610,7 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bdfcb06b6de87847a11b9892656b1ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  speed: 10
+  speed: 5
 --- !u!50 &158617805
 Rigidbody2D:
   serializedVersion: 5
@@ -684,6 +685,28 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 8.54, y: 6.41}
   m_EdgeRadius: 0
+--- !u!95 &158617807
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158617798}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: de50960672bf7b641b388c52676414de, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &217900557
 GameObject:
   m_ObjectHideFlags: 0
@@ -3009,7 +3032,8 @@ GameObject:
   - component: {fileID: 1303892787}
   - component: {fileID: 1303892786}
   - component: {fileID: 1303892785}
-  m_Layer: 0
+  - component: {fileID: 1303892788}
+  m_Layer: 7
   m_Name: finish point
   m_TagString: Finish
   m_Icon: {fileID: 0}
@@ -3136,6 +3160,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1303892788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303892784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ba64d1a166dc1048b19e48113b3770f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  goatAnimator: {fileID: 158617807}
 --- !u!1 &1430236629 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6329967683116505041, guid: ca3c4f995c7c2974a91d56ee71ad09c3, type: 3}
