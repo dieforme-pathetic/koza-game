@@ -11,6 +11,11 @@ public class WaterDeathDetector : MonoBehaviour
     private SpriteRenderer sr;
     private Rigidbody2D rb;
     private Vector3 startPos;
+    private Animator animator;
+    
+    private bool isFalling = false;
+    private float fallTimer = 0f;
+    public float deathDelay = 0.1f; // Задержка перед смертью (можно настроить в инспекторе)
 
     // Кэшируем все песчаные объекты чтобы не искать каждый кадр
     private SpriteRenderer[] sandTiles;
@@ -20,6 +25,7 @@ public class WaterDeathDetector : MonoBehaviour
         movement = GetComponent<CharacterMovement>();
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         startPos = respawnPoint != null ? respawnPoint.position : transform.position;
 
         // Собираем все спрайты с тегом Ground
@@ -35,7 +41,7 @@ public class WaterDeathDetector : MonoBehaviour
 
         enabled = false;
         Invoke(nameof(EnableDetector), 0.5f);
-        Debug.Log("WaterDeathDetector запустился. isDead = " + movement.isDead);
+        Debug.Log("WaterDeathDetector запустился. isDead = " + movement. isDead);
     }
 
     private void EnableDetector()
@@ -75,8 +81,25 @@ public class WaterDeathDetector : MonoBehaviour
 
         if (!onSand)
         {
-            StartCoroutine(DieAndRespawn());
+            if (!isFalling)
+            {
+                isFalling = true;
+                fallTimer = 0f;
+            }
+
+            fallTimer += Time.deltaTime;
+
+            if (fallTimer >= deathDelay)
+            {
+                StartCoroutine(DieAndRespawn());
+            }
         }
+        else
+        {
+            isFalling = false;
+            fallTimer = 0f;
+        }
+            
     }
 
     private IEnumerator DieAndRespawn()
@@ -86,6 +109,15 @@ public class WaterDeathDetector : MonoBehaviour
 
         rb.linearVelocity = Vector2.zero;
         rb.isKinematic = true;
+        
+        if (animator != null)
+        {
+            animator.SetTrigger("Drowning");
+        }
+        
+        float deathAnimDuration = 0.5f; // Измените под длину вашей анимации смерти
+        yield return new WaitForSeconds(deathAnimDuration);
+
 
         float t = 0f;
         while (t < respawnDelay)
@@ -100,5 +132,7 @@ public class WaterDeathDetector : MonoBehaviour
         rb.isKinematic = false;
         sr.color = Color.white;
         movement.isDead = false;
+        
+        // Возвращаем анимацию в состояние Idle (или другое состояние по умолчанию)
     }
 }
