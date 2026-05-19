@@ -185,7 +185,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 6
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -5928034135783159846, guid: 16330b5e6b07f2b43b35eaadfb5b269f, type: 3}
+  m_Sprite: {fileID: 9046354579644278112, guid: dfd6e148de40ff5469a12657317cc66a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1273,7 +1273,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 206785521
   m_SortingLayer: 1
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 9046354579644278112, guid: dfd6e148de40ff5469a12657317cc66a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1387,6 +1387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boat
   speed: 5
+  playerCanControl: 1
   defaultGoatSprite: {fileID: 7661990178796225546, guid: bad4aecf49d4bd44d90afff52adee756, type: 3}
 --- !u!1001 &551305513
 PrefabInstance:
@@ -2207,7 +2208,6 @@ MonoBehaviour:
   speed: 7
   grabRange: 0.3
   isDead: 0
-  interactionPrompt: {fileID: 0}
 --- !u!114 &1451950805
 MonoBehaviour:
   m_ObjectHideFlags: 0
