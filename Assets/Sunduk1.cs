@@ -12,8 +12,9 @@ public class ChestLock : MonoBehaviour
     [Header("Сундук")]
     [SerializeField] private GameObject chestObject;
     
-    [Header("Предмет")]
-    [SerializeField] private GameObject itemInside;
+    [Header("Предмет (рубильник)")]
+    [SerializeField] private GameObject itemInside; // Рубильник (префаб с PickupItem)
+    [SerializeField] private Transform itemSpawnPoint; // Где появится рубильник
     
     private string currentInput = "";
     private bool isPlayerNear = false;
@@ -24,7 +25,6 @@ public class ChestLock : MonoBehaviour
     void Start()
     {
         lockPanel.SetActive(false);
-        if (itemInside != null) itemInside.SetActive(false);
         
         originalColor = displayText.color;
         UpdateDisplay();
@@ -131,15 +131,30 @@ public class ChestLock : MonoBehaviour
         displayText.text = "!!!!";
         displayText.color = Color.green;
         yield return new WaitForSecondsRealtime(0.5f);
-        
+    
         isOpen = true;
-        
+    
         if (chestObject != null)
             chestObject.SetActive(false);
+    
+        // СОЗДАЁМ РУБИЛЬНИК рядом с сундуком
+        if (itemInside != null && itemSpawnPoint != null)
+        {
+            GameObject spawnedItem = Instantiate(itemInside, itemSpawnPoint.position, Quaternion.identity);
+            spawnedItem.SetActive(true);
         
-        if (itemInside != null)
-            itemInside.SetActive(true);
+            // Убеждаемся что коллайдер есть и он триггер
+            Collider2D col = spawnedItem.GetComponent<Collider2D>();
+            if (col != null)
+                col.isTrigger = true;
         
+            Debug.Log($"Рубильник появился в позиции: {itemSpawnPoint.position}");
+        }
+        else
+        {
+            Debug.LogError("itemInside или itemSpawnPoint не назначены в инспекторе!");
+        }
+    
         CloseLockPanel();
     }
     

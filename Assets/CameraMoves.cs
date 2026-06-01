@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class CameraMoves : MonoBehaviour
 {
-    public Transform target;           // Коза, за которой следим
-    public Transform background;       // Фон (перетащи Background сюда)
-    public float cameraSize = 5f;      // Размер камеры (чем меньше, тем ближе)
+    public Transform target;
+    public Transform background;
+    public float cameraSize = 5f;
     
     private Camera cam;
     private float minX, maxX, minY, maxY;
@@ -12,9 +12,24 @@ public class CameraMoves : MonoBehaviour
     void Start()
     {
         cam = GetComponent<Camera>();
+        if (cam == null)
+            cam = Camera.main;
+        
         cam.orthographicSize = cameraSize;
         
-        // Автоматически вычисляем границы по фону
+        // Автоматически ищем цель если не назначена
+        if (target == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+                target = playerObj.transform;
+        }
+        
+        UpdateBounds();
+    }
+    
+    void UpdateBounds()
+    {
         if (background != null)
         {
             SpriteRenderer bgRenderer = background.GetComponent<SpriteRenderer>();
@@ -34,7 +49,17 @@ public class CameraMoves : MonoBehaviour
     
     void LateUpdate()
     {
-        if (target == null) return;
+        // Если цель пропала, ищем козу по тегу КАЖДЫЙ КАДР
+        if (target == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+                target = playerObj.transform;
+            else
+                return;
+        }
+        
+        UpdateBounds();
         
         float targetX = Mathf.Clamp(target.position.x, minX, maxX);
         float targetY = Mathf.Clamp(target.position.y, minY, maxY);
