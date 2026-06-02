@@ -48,7 +48,7 @@ TagManager:
   - name: water sorting layer
     uniqueID: 206785521
     locked: 0
-  - name: 
+  - name: canvas
     uniqueID: 3199223553
     locked: 0
   m_RenderingLayers:
