@@ -1,12 +1,12 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement; // ОБЯЗАТЕЛЬНО для работы со сценами
 
-public class LevelButton : MonoBehaviour
+public class SceneChanger : MonoBehaviour
 {
-    [SerializeField] private string levelName = "Game scene 3 04.05";
-    
-    public void LoadThisLevel()
+    // Эту функцию мы привяжем к кнопке. 
+    // В поле sceneName мы напишем точное название сцены, куда хотим перейти.
+    public void ChangeScene(string sceneName)
     {
-        SceneManager.LoadScene(levelName);
+        SceneManager.LoadScene(sceneName);
     }
 }
