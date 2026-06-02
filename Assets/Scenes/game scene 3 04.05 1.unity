@@ -1259,7 +1259,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   speed: 3
+  grabRange: 1
   isDead: 0
+  respawnPoint: {fileID: 0}
+  interactionPrompt: {fileID: 0}
 --- !u!114 &158617812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1273,8 +1276,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   respawnDelay: 1
-  respawnPoint: {fileID: 0}
   sandTag: Ground
+  boatWallTag: BoatWall
   deathDelay: 0.1
 --- !u!1 &172888800
 GameObject:
