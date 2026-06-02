@@ -46614,12 +46614,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -47363,6 +47363,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5600940969411104128, guid: 70c654d9b977d6a458572a1dfe23906e, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6173391917260657697, guid: 70c654d9b977d6a458572a1dfe23906e, type: 3}
       propertyPath: m_Name
       value: "\u0438\u0433\u0440\u043E\u043A \u043A\u043E\u0437\u0430"
@@ -47406,6 +47410,10 @@ PrefabInstance:
     - target: {fileID: 7071906012353994224, guid: 70c654d9b977d6a458572a1dfe23906e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7071906012353994224, guid: 70c654d9b977d6a458572a1dfe23906e, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7379505835525093886, guid: 70c654d9b977d6a458572a1dfe23906e, type: 3}
       propertyPath: respawnPoint
