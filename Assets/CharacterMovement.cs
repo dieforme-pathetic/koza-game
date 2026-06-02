@@ -247,7 +247,7 @@ public class CharacterMovement : MonoBehaviour
             col.enabled = false;
         
         if (animator != null)
-            animator.SetTrigger("Death");
+            animator.SetTrigger("Drowning");
         
         if (attachedPlatform != null)
         {
