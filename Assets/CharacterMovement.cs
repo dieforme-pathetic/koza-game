@@ -50,7 +50,7 @@ public class CharacterMovement : MonoBehaviour
     void Update()
     {
         if (isDead) return;
-        
+    
         // ========== ЛОГИКА ЛОДКИ (когда внутри) ==========
         if (currentBoat != null)
         {
@@ -58,25 +58,25 @@ public class CharacterMovement : MonoBehaviour
                 Input.GetAxisRaw("Horizontal"),
                 Input.GetAxisRaw("Vertical")
             ).normalized;
-            
+        
             currentBoat.SetMovementInput(boatMovement);
-            
-            // Выход из лодки по E
-            if (Input.GetKeyDown(KeyCode.E))
+        
+            // ВЫХОД из лодки по ПРОБЕЛУ (теперь тоже пробел)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 ExitBoat();
             }
             return;
         }
-        
+    
         // Обновляем UI подсказку
         if (interactionPrompt != null)
         {
             interactionPrompt.SetActive(nearbyBoat != null);
         }
-        
+    
         // ========== ЛОГИКА ПЛАТФОРМЫ И ЛОДКИ (ПРОБЕЛ) ==========
-        
+    
         // НАЖАТИЕ ПРОБЕЛА (один раз)
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -86,7 +86,7 @@ public class CharacterMovement : MonoBehaviour
                 BoardBoat(nearbyBoat);
                 return; // Выходим, чтобы не приклеиваться к платформе
             }
-            
+        
             // Если лодки нет - приклеиваемся к платформе
             if (!isHolding)
             {
@@ -94,7 +94,7 @@ public class CharacterMovement : MonoBehaviour
                 TryAttachToPlatform();
             }
         }
-        
+    
         // ОТПУСКАНИЕ ПРОБЕЛА (для отклеивания от платформы)
         if (Input.GetKeyUp(KeyCode.Space))
         {
@@ -104,13 +104,13 @@ public class CharacterMovement : MonoBehaviour
                 DetachFromPlatform();
             }
         }
-        
+    
         // Движение
         movement = new Vector2(
             Input.GetAxisRaw("Horizontal"),
             Input.GetAxisRaw("Vertical")
         ).normalized;
-        
+    
         UpdateAnimations();
     }
     

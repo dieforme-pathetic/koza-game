@@ -13,21 +13,24 @@ public class ChestLock : MonoBehaviour
     [SerializeField] private GameObject chestObject;
     
     [Header("Предмет (рубильник)")]
-    [SerializeField] private GameObject itemInside; // Рубильник (префаб с PickupItem)
-    [SerializeField] private Transform itemSpawnPoint; // Где появится рубильник
+    [SerializeField] private GameObject itemInside;
+    [SerializeField] private Transform itemSpawnPoint;
     
     private string currentInput = "";
     private bool isPlayerNear = false;
     private bool isOpen = false;
     private bool isLockActive = false;
     private Color originalColor;
+    private bool hasSpawned = false;
     
     void Start()
     {
         lockPanel.SetActive(false);
-        
         originalColor = displayText.color;
         UpdateDisplay();
+        
+        // Убеждаемся что рубильник не заспавнен при старте
+        hasSpawned = false;
     }
     
     void Update()
@@ -137,22 +140,17 @@ public class ChestLock : MonoBehaviour
         if (chestObject != null)
             chestObject.SetActive(false);
     
-        // СОЗДАЁМ РУБИЛЬНИК рядом с сундуком
-        if (itemInside != null && itemSpawnPoint != null)
+        // РУБИЛЬНИК ПОЯВЛЯЕТСЯ ТОЛЬКО ЗДЕСЬ ПОСЛЕ ПРАВИЛЬНОГО КОДА
+        if (!hasSpawned && itemInside != null && itemSpawnPoint != null)
         {
             GameObject spawnedItem = Instantiate(itemInside, itemSpawnPoint.position, Quaternion.identity);
             spawnedItem.SetActive(true);
-        
-            // Убеждаемся что коллайдер есть и он триггер
-            Collider2D col = spawnedItem.GetComponent<Collider2D>();
-            if (col != null)
-                col.isTrigger = true;
-        
-            Debug.Log($"Рубильник появился в позиции: {itemSpawnPoint.position}");
+            hasSpawned = true;
+            Debug.Log("✅ РУБИЛЬНИК ПОЯВИЛСЯ ПОСЛЕ ВВОДА КОДА 1234!");
         }
         else
         {
-            Debug.LogError("itemInside или itemSpawnPoint не назначены в инспекторе!");
+            Debug.LogError("❌ Ошибка: itemInside или itemSpawnPoint не назначены в инспекторе!");
         }
     
         CloseLockPanel();

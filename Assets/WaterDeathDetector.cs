@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WaterDeathDetector : MonoBehaviour
 {
     public float respawnDelay = 1f;
     public string sandTag = "Ground";
+    public string boatWallTag = "BoatWall";
     
     private CharacterMovement movement;
     private SpriteRenderer sr;
@@ -15,7 +17,7 @@ public class WaterDeathDetector : MonoBehaviour
     private float fallTimer = 0f;
     public float deathDelay = 0.1f;
     
-    private SpriteRenderer[] sandTiles;
+    private List<SpriteRenderer> safeTiles; // Список безопасных объектов (Ground + BoatWall)
     
     void Start()
     {
@@ -24,14 +26,25 @@ public class WaterDeathDetector : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         
-        GameObject[] sandObjects = GameObject.FindGameObjectsWithTag(sandTag);
-        System.Collections.Generic.List<SpriteRenderer> srs = new();
-        foreach (var obj in sandObjects)
+        safeTiles = new List<SpriteRenderer>();
+        
+        // Находим все объекты с тегом Ground
+        GameObject[] groundObjects = GameObject.FindGameObjectsWithTag(sandTag);
+        foreach (var obj in groundObjects)
         {
             SpriteRenderer s = obj.GetComponent<SpriteRenderer>();
-            if (s != null) srs.Add(s);
+            if (s != null) safeTiles.Add(s);
         }
-        sandTiles = srs.ToArray();
+        
+        // Находим все объекты с тегом BoatWall
+        GameObject[] wallObjects = GameObject.FindGameObjectsWithTag(boatWallTag);
+        foreach (var obj in wallObjects)
+        {
+            SpriteRenderer s = obj.GetComponent<SpriteRenderer>();
+            if (s != null) safeTiles.Add(s);
+        }
+        
+        Debug.Log($"Найдено безопасных объектов (Ground + BoatWall): {safeTiles.Count}");
         
         enabled = false;
         Invoke(nameof(EnableDetector), 0.5f);
@@ -55,22 +68,24 @@ public class WaterDeathDetector : MonoBehaviour
         }
         
         Vector2 pos2D = new Vector2(transform.position.x, transform.position.y);
-        bool onSand = false;
+        bool onSafeTile = false;
         
-        foreach (var tile in sandTiles)
+        foreach (var tile in safeTiles)
         {
+            if (tile == null) continue;
+            
             Vector2 min = new Vector2(tile.bounds.min.x, tile.bounds.min.y);
             Vector2 max = new Vector2(tile.bounds.max.x, tile.bounds.max.y);
             
             if (pos2D.x >= min.x && pos2D.x <= max.x &&
                 pos2D.y >= min.y && pos2D.y <= max.y)
             {
-                onSand = true;
+                onSafeTile = true;
                 break;
             }
         }
         
-        if (!onSand)
+        if (!onSafeTile)
         {
             if (!isFalling)
             {
@@ -133,7 +148,6 @@ public class WaterDeathDetector : MonoBehaviour
         }
         else
         {
-            // Если точка не найдена, используем стартовую позицию
             transform.position = new Vector3(0, 0, 0f);
             Debug.LogWarning("Точка респавна с тегом 'Respawn' не найдена! Коза возродилась в (0,0,0)");
         }

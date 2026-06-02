@@ -32,21 +32,17 @@ public class GeneratorLock : MonoBehaviour
     {
         if (isOpen) return;
         
-        // ПРОВЕРКА: игрок рядом и нажал E
         if (isPlayerNear && Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("Игрок нажал E на втором сундуке");
-            
             // Проверяем, есть ли у игрока рубильник
             PickupItem item = FindObjectOfType<PickupItem>();
             if (item != null && item.IsPickedUp())
             {
-                Debug.Log("Рубильник есть! Открываем панель");
                 OpenLockPanel();
             }
             else
             {
-                Debug.Log("Нет рубильника! Нужно сначала получить рубильник из первого сундука");
+                Debug.Log("❌ Нужно взять рубильник из первого сундука!");
             }
         }
         
@@ -90,10 +86,7 @@ public class GeneratorLock : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
-        {
             isPlayerNear = true;
-            Debug.Log("Коза рядом со вторым сундуком");
-        }
     }
     
     void OnTriggerExit2D(Collider2D other)
@@ -115,7 +108,6 @@ public class GeneratorLock : MonoBehaviour
         Time.timeScale = 0f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        Debug.Log("Панель замка открыта");
     }
     
     public void CloseLockPanel()
@@ -129,8 +121,6 @@ public class GeneratorLock : MonoBehaviour
     
     public void SubmitCode()
     {
-        Debug.Log($"Введён код: {currentInput}, правильный: {correctCode}");
-        
         if (currentInput == correctCode)
             StartCoroutine(UnlockChest());
         else
@@ -153,18 +143,14 @@ public class GeneratorLock : MonoBehaviour
         if (item != null)
         {
             Destroy(item.gameObject);
-            Debug.Log("Рубильник использован и исчез");
+            Debug.Log("✅ Рубильник использован и исчез");
         }
         
         // Включаем генератор
         if (targetGenerator != null)
         {
             targetGenerator.Activate();
-            Debug.Log("Генератор активирован!");
-        }
-        else
-        {
-            Debug.LogError("Target Generator не назначен в инспекторе!");
+            Debug.Log("✅ Генератор активирован!");
         }
         
         CloseLockPanel();

@@ -16,7 +16,7 @@ public class Generator : MonoBehaviour
         if (isActivated) return;
         
         isActivated = true;
-        Debug.Log("ГЕНЕРАТОР АКТИВИРОВАН!!!");
+        Debug.Log("💡 ГЕНЕРАТОР АКТИВИРОВАН! Лампы загораются.");
         
         if (activationEffect != null)
             activationEffect.Play();
@@ -24,18 +24,10 @@ public class Generator : MonoBehaviour
         if (activationSound != null)
             AudioSource.PlayClipAtPoint(activationSound, transform.position);
         
-        // Включаем все лампы
         foreach (Light lamp in lampsToActivate)
         {
             if (lamp != null)
                 lamp.enabled = true;
-        }
-        
-        // Включаем лампы через скрипт
-        Lamp[] allLamps = FindObjectsOfType<Lamp>();
-        foreach (Lamp lamp in allLamps)
-        {
-            lamp.TurnOn();
         }
     }
 }

@@ -5,6 +5,16 @@ public class Boat : MonoBehaviour
     public float speed = 5f;
     public Transform boatRespawnPoint;
     
+    [Header("Настройки дебаггера")]
+    public bool showDebugMessages = true;
+    public bool showDebugGizmos = true;
+    
+    [Header("Радиус посадки")]
+    public float pickupRadius = 2f;
+    
+    [Header("Обнаружение стен")]
+    public float wallCheckDistance = 0.8f;
+    
     private CharacterMovement passenger;
     private Vector2 moveInput;
     private Rigidbody2D rb;
@@ -19,19 +29,23 @@ public class Boat : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
         
-        boatCollider = GetComponent<Collider2D>();
-        if (boatCollider != null)
-            boatCollider.isTrigger = true;
+        CircleCollider2D trigger = GetComponent<CircleCollider2D>();
+        if (trigger == null)
+            trigger = gameObject.AddComponent<CircleCollider2D>();
+        trigger.isTrigger = true;
+        trigger.radius = pickupRadius;
+        boatCollider = trigger;
+        
+        if (showDebugMessages)
+            Debug.Log("[ЛОДКА] Инициализирована");
     }
     
     void FixedUpdate()
     {
         if (passenger != null && moveInput.magnitude > 0.01f)
         {
-            // Новая позиция
             Vector2 newPos = rb.position + moveInput * speed * Time.fixedDeltaTime;
             
-            // Проверяем, можно ли двигаться
             if (CanMoveTo(newPos))
             {
                 rb.MovePosition(newPos);
@@ -41,22 +55,19 @@ public class Boat : MonoBehaviour
     
     bool CanMoveTo(Vector2 targetPos)
     {
-        // Проверяем коллайдеры в новой позиции
-        Collider2D[] hits = Physics2D.OverlapCircleAll(targetPos, 0.4f);
+        // Проверяем столкновение со стенами
+        Collider2D[] hits = Physics2D.OverlapCircleAll(targetPos, 0.5f);
         
         foreach (Collider2D hit in hits)
         {
             if (hit == boatCollider) continue;
             if (hit.CompareTag("Player")) continue;
             
-            // Лодка НЕ МОЖЕТ ехать по Ground
-            if (hit.gameObject.layer == LayerMask.NameToLayer("ground"))
+            // Если на пути стена с тегом Wall или BoatWall - не двигаемся
+            if (hit.CompareTag("Wall") || hit.CompareTag("BoatWall"))
             {
-                return false;
-            }
-            
-            if (hit.CompareTag("Ground"))
-            {
+                if (showDebugMessages)
+                    Debug.Log($"[ЛОДКА] ❌ Врезалась в: {hit.name} (тег: {hit.tag})");
                 return false;
             }
         }
@@ -69,9 +80,16 @@ public class Boat : MonoBehaviour
         moveInput = input.magnitude < 0.05f ? Vector2.zero : input.normalized;
     }
     
+    public Vector2 GetMovementDirection()
+    {
+        return moveInput;
+    }
+    
     public void SetPassenger(CharacterMovement newPassenger)
     {
         passenger = newPassenger;
+        if (showDebugMessages)
+            Debug.Log($"[ЛОДКА] Пассажир {(passenger != null ? "сел" : "вышел")}");
     }
     
     public bool HasPassenger()
@@ -105,7 +123,11 @@ public class Boat : MonoBehaviour
         {
             CharacterMovement movement = other.GetComponent<CharacterMovement>();
             if (movement != null)
+            {
                 movement.SetNearbyBoat(this, true);
+                if (showDebugMessages)
+                    Debug.Log("[ЛОДКА] Коза рядом! Нажми ПРОБЕЛ, чтобы сесть");
+            }
         }
     }
     
@@ -117,5 +139,13 @@ public class Boat : MonoBehaviour
             if (movement != null)
                 movement.SetNearbyBoat(this, false);
         }
+    }
+    
+    void OnDrawGizmosSelected()
+    {
+        if (!showDebugGizmos) return;
+        
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, pickupRadius);
     }
 }
