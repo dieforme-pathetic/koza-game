@@ -6,18 +6,20 @@ TagManager:
   tags:
   - Ground
   - Water
+  - Wall
+  - BoatWall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - boat
   - Water
   - UI
   - ground
   - wall
+  - 
+  - boatWall
   - goat
-  - 
-  - 
   - 
   - 
   - 

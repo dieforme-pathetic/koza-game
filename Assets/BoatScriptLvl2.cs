@@ -2,114 +2,150 @@ using UnityEngine;
 
 public class Boat : MonoBehaviour
 {
-    [Header("Движение")]
     public float speed = 5f;
+    public Transform boatRespawnPoint;
     
-    [Header("Спрайт козы (стоячий) — опционально")]
-    public Sprite defaultGoatSprite;
+    [Header("Настройки дебаггера")]
+    public bool showDebugMessages = true;
+    public bool showDebugGizmos = true;
     
-    private CharacterMovement passenger; // ссылка на козу-пассажира
+    [Header("Радиус посадки")]
+    public float pickupRadius = 2f;
+    
+    [Header("Обнаружение стен")]
+    public float wallCheckDistance = 0.8f;
+    
+    private CharacterMovement passenger;
     private Vector2 moveInput;
     private Rigidbody2D rb;
-    private Collider2D boatTrigger;
+    private Collider2D boatCollider;
     
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
-        {
             rb = gameObject.AddComponent<Rigidbody2D>();
-            rb.bodyType = RigidbodyType2D.Kinematic;
-        }
+        
+        rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
         
-        // Получаем коллайдер-триггер для обнаружения козы
-        boatTrigger = GetComponent<Collider2D>();
-        if (boatTrigger != null)
-            boatTrigger.isTrigger = true;
+        CircleCollider2D trigger = GetComponent<CircleCollider2D>();
+        if (trigger == null)
+            trigger = gameObject.AddComponent<CircleCollider2D>();
+        trigger.isTrigger = true;
+        trigger.radius = pickupRadius;
+        boatCollider = trigger;
+        
+        if (showDebugMessages)
+            Debug.Log("[ЛОДКА] Инициализирована");
     }
     
-    void Update()
+    void FixedUpdate()
     {
-        // Движение только если есть пассажир
-        if (passenger != null)
+        if (passenger != null && moveInput.magnitude > 0.01f)
         {
-            // Двигаем лодку по вводу
-            if (moveInput.magnitude > 0.01f)
+            Vector2 newPos = rb.position + moveInput * speed * Time.fixedDeltaTime;
+            
+            if (CanMoveTo(newPos))
             {
-                Vector2 newPos = rb.position + moveInput * speed * Time.deltaTime;
                 rb.MovePosition(newPos);
             }
         }
     }
     
-    void FixedUpdate()
+    bool CanMoveTo(Vector2 targetPos)
     {
-        // Альтернативное движение в FixedUpdate
-        if (passenger != null && moveInput.magnitude > 0.01f)
+        // Проверяем столкновение со стенами
+        Collider2D[] hits = Physics2D.OverlapCircleAll(targetPos, 0.5f);
+        
+        foreach (Collider2D hit in hits)
         {
-            Vector2 newPos = rb.position + moveInput * speed * Time.fixedDeltaTime;
-            rb.MovePosition(newPos);
+            if (hit == boatCollider) continue;
+            if (hit.CompareTag("Player")) continue;
+            
+            // Если на пути стена с тегом Wall или BoatWall - не двигаемся
+            if (hit.CompareTag("Wall") || hit.CompareTag("BoatWall"))
+            {
+                if (showDebugMessages)
+                    Debug.Log($"[ЛОДКА] ❌ Врезалась в: {hit.name} (тег: {hit.tag})");
+                return false;
+            }
         }
+        
+        return true;
     }
     
-    // Получить ввод от козы
     public void SetMovementInput(Vector2 input)
     {
-        moveInput = input.normalized;
+        moveInput = input.magnitude < 0.05f ? Vector2.zero : input.normalized;
     }
     
-    // Установить пассажира (вызывается из CharacterMovement)
+    public Vector2 GetMovementDirection()
+    {
+        return moveInput;
+    }
+    
     public void SetPassenger(CharacterMovement newPassenger)
     {
         passenger = newPassenger;
-        
-        if (passenger != null)
-        {
-            // Меняем спрайт на стоячий (опционально)
-            SpriteRenderer sr = passenger.GetComponent<SpriteRenderer>();
-            if (sr != null && defaultGoatSprite != null)
-            {
-                sr.sprite = defaultGoatSprite;
-            }
-            Debug.Log("Лодка: пассажир сел");
-        }
-        else
-        {
-            Debug.Log("Лодка: пассажир вышел");
-        }
-    }
-    
-    // Обработка входа в зону лодки
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            CharacterMovement movement = other.GetComponent<CharacterMovement>();
-            if (movement != null && passenger == null)
-            {
-                movement.SetNearbyBoat(this, true);
-                Debug.Log("Коза рядом с лодкой! Нажми E, чтобы сесть");
-            }
-        }
-    }
-    
-    // Обработка выхода из зоны лодки
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            CharacterMovement movement = other.GetComponent<CharacterMovement>();
-            if (movement != null && passenger == null)
-            {
-                movement.SetNearbyBoat(this, false);
-                Debug.Log("Коза отошла от лодки");
-            }
-        }
+        if (showDebugMessages)
+            Debug.Log($"[ЛОДКА] Пассажир {(passenger != null ? "сел" : "вышел")}");
     }
     
     public bool HasPassenger()
     {
         return passenger != null;
+    }
+    
+    public void TeleportToRespawn()
+    {
+        if (boatRespawnPoint != null)
+            transform.position = boatRespawnPoint.position;
+        else
+        {
+            GameObject respawnObj = GameObject.FindGameObjectWithTag("RespawnPoint");
+            if (respawnObj != null)
+                transform.position = respawnObj.transform.position + new Vector3(2f, 0, 0);
+        }
+        
+        moveInput = Vector2.zero;
+        
+        if (passenger != null)
+        {
+            passenger.ExitBoat();
+            passenger = null;
+        }
+    }
+    
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && passenger == null)
+        {
+            CharacterMovement movement = other.GetComponent<CharacterMovement>();
+            if (movement != null)
+            {
+                movement.SetNearbyBoat(this, true);
+                if (showDebugMessages)
+                    Debug.Log("[ЛОДКА] Коза рядом! Нажми ПРОБЕЛ, чтобы сесть");
+            }
+        }
+    }
+    
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && passenger == null)
+        {
+            CharacterMovement movement = other.GetComponent<CharacterMovement>();
+            if (movement != null)
+                movement.SetNearbyBoat(this, false);
+        }
+    }
+    
+    void OnDrawGizmosSelected()
+    {
+        if (!showDebugGizmos) return;
+        
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, pickupRadius);
     }
 }
