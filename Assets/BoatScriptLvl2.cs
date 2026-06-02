@@ -19,6 +19,7 @@ public class Boat : MonoBehaviour
     private Vector2 moveInput;
     private Rigidbody2D rb;
     private Collider2D boatCollider;
+    private Vector3 startPosition;
     
     void Start()
     {
@@ -35,6 +36,8 @@ public class Boat : MonoBehaviour
         trigger.isTrigger = true;
         trigger.radius = pickupRadius;
         boatCollider = trigger;
+        
+        startPosition = transform.position;
         
         if (showDebugMessages)
             Debug.Log("[ЛОДКА] Инициализирована");
@@ -55,7 +58,6 @@ public class Boat : MonoBehaviour
     
     bool CanMoveTo(Vector2 targetPos)
     {
-        // Проверяем столкновение со стенами
         Collider2D[] hits = Physics2D.OverlapCircleAll(targetPos, 0.5f);
         
         foreach (Collider2D hit in hits)
@@ -63,7 +65,6 @@ public class Boat : MonoBehaviour
             if (hit == boatCollider) continue;
             if (hit.CompareTag("Player")) continue;
             
-            // Если на пути стена с тегом Wall или BoatWall - не двигаемся
             if (hit.CompareTag("Wall") || hit.CompareTag("BoatWall"))
             {
                 if (showDebugMessages)
@@ -97,24 +98,56 @@ public class Boat : MonoBehaviour
         return passenger != null;
     }
     
-    public void TeleportToRespawn()
+    // ОБЩИЙ МЕТОД ДЛЯ РЕСПАВНА ЛОДКИ (вызывается при любой смерти козы)
+    public void RespawnBoat()
     {
+        // Находим точку респавна
+        Vector3 respawnPos;
+        
+        // Своя точка респавна лодки
         if (boatRespawnPoint != null)
-            transform.position = boatRespawnPoint.position;
+        {
+            respawnPos = boatRespawnPoint.position;
+            if (showDebugMessages)
+                Debug.Log($"[ЛОДКА] Респавн на своей точке: {respawnPos}");
+        }
         else
         {
+            // Ищем точку респавна козы
             GameObject respawnObj = GameObject.FindGameObjectWithTag("RespawnPoint");
             if (respawnObj != null)
-                transform.position = respawnObj.transform.position + new Vector3(2f, 0, 0);
+            {
+                respawnPos = respawnObj.transform.position + new Vector3(2f, 0, 0);
+                if (showDebugMessages)
+                    Debug.Log($"[ЛОДКА] Респавн у точки козы: {respawnPos}");
+            }
+            else
+            {
+                respawnPos = startPosition;
+                if (showDebugMessages)
+                    Debug.Log($"[ЛОДКА] Респавн на стартовую позицию: {respawnPos}");
+            }
         }
         
+        // Телепортируем лодку
+        transform.position = respawnPos;
+        
+        // Сбрасываем движение
         moveInput = Vector2.zero;
         
+        // Высаживаем пассажира если есть
         if (passenger != null)
         {
             passenger.ExitBoat();
             passenger = null;
         }
+        
+        // Сбрасываем скорость
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+        
+        if (showDebugMessages)
+            Debug.Log("[ЛОДКА] Респавн завершён!");
     }
     
     void OnTriggerEnter2D(Collider2D other)
@@ -147,5 +180,11 @@ public class Boat : MonoBehaviour
         
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, pickupRadius);
+        
+        if (boatRespawnPoint != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(boatRespawnPoint.position, 0.5f);
+        }
     }
 }

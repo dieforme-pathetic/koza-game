@@ -17,7 +17,6 @@ public class Teleport2 : MonoBehaviour
     
     private bool isActivated = false;
     private bool isPlayerNear = false;
-    private bool itemsChecked = false;
     
     void Start()
     {

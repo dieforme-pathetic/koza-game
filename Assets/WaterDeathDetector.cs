@@ -139,6 +139,7 @@ public class WaterDeathDetector : MonoBehaviour
             t += 0.12f;
         }
         
+        
         // ========== НАХОДИМ ТОЧКУ РЕСПАВНА ПО ТЕГУ ==========
         GameObject respawnObj = GameObject.FindGameObjectWithTag("Respawn");
         if (respawnObj != null)
@@ -150,6 +151,13 @@ public class WaterDeathDetector : MonoBehaviour
         {
             transform.position = new Vector3(0, 0, 0f);
             Debug.LogWarning("Точка респавна с тегом 'Respawn' не найдена! Коза возродилась в (0,0,0)");
+            
+            Boat boat = FindObjectOfType<Boat>();
+            if (boat != null)
+            {
+                boat.RespawnBoat();
+                Debug.Log("🚤 Лодка телепортирована после смерти козы!");
+            }
         }
         
         rb.linearVelocity = Vector2.zero;

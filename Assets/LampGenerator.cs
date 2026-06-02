@@ -1,21 +1,21 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
-public class Lamp : MonoBehaviour
+public class Lamp2D : MonoBehaviour
 {
-    public Light lampLight;
-    public SpriteRenderer lampSprite;
-    public Color onColor = Color.yellow;
-    public Color offColor = Color.gray;
+    public Light2D lampLight;
+    public float targetIntensity = 10f;
+    public float offIntensity = 0f;
     
     private bool isOn = false;
     
     void Start()
     {
-        if (lampLight != null)
-            lampLight.enabled = false;
+        if (lampLight == null)
+            lampLight = GetComponent<Light2D>();
         
-        if (lampSprite != null)
-            lampSprite.color = offColor;
+        if (lampLight != null)
+            lampLight.intensity = offIntensity;
     }
     
     public void TurnOn()
@@ -25,9 +25,24 @@ public class Lamp : MonoBehaviour
         isOn = true;
         
         if (lampLight != null)
-            lampLight.enabled = true;
+            lampLight.intensity = targetIntensity;
         
-        if (lampSprite != null)
-            lampSprite.color = onColor;
+        Debug.Log($"💡 Лампа включена! Интенсивность: {targetIntensity}");
+    }
+    
+    public void TurnOff()
+    {
+        if (!isOn) return;
+        
+        isOn = false;
+        
+        if (lampLight != null)
+            lampLight.intensity = offIntensity;
+    }
+    
+    public void SetIntensity(float intensity)
+    {
+        if (lampLight != null)
+            lampLight.intensity = intensity;
     }
 }

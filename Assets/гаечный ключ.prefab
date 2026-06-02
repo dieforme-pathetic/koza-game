@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddf868fc2e8110429a7130617f89abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  itemName: Wrench
 --- !u!61 &6790485986852904414
 BoxCollider2D:
   m_ObjectHideFlags: 0

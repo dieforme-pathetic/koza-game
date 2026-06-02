@@ -118,6 +118,7 @@ public class MonsterDeathHandler : MonoBehaviour
         if (movement != null)
             movement.isDead = false;
         
+        
         // Возвращаем анимацию в Idle
         if (animator != null)
             animator.Play("Idle");
@@ -127,6 +128,13 @@ public class MonsterDeathHandler : MonoBehaviour
         foreach (var monster in monsters)
         {
             monster.ResetMonster();
+        }
+        
+        Boat boat = FindObjectOfType<Boat>();
+        if (boat != null)
+        {
+            boat.RespawnBoat();
+            Debug.Log("🚤 Лодка телепортирована после смерти козы!");
         }
         
         Debug.Log("Коза возродилась после смерти от монстра!");
