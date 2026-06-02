@@ -2950,6 +2950,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6329967683116505041, guid: ca3c4f995c7c2974a91d56ee71ad09c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1577653808}
+    - targetCorrespondingSourceObject: {fileID: 6329967683116505041, guid: ca3c4f995c7c2974a91d56ee71ad09c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1577653812}
   m_SourcePrefab: {fileID: 100100000, guid: ca3c4f995c7c2974a91d56ee71ad09c3, type: 3}
 --- !u!1 &391575090
 GameObject:
@@ -3101,7 +3104,7 @@ GameObject:
   - component: {fileID: 439518318}
   - component: {fileID: 439518317}
   - component: {fileID: 439518319}
-  - component: {fileID: 439518320}
+  - component: {fileID: 439518321}
   m_Layer: 6
   m_Name: Image
   m_TagString: Untagged
@@ -3189,7 +3192,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &439518320
+--- !u!114 &439518321
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3198,9 +3201,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 439518315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be2aa7d31f7ef894c9f9cd842aae2944, type: 3}
+  m_Script: {fileID: 11500000, guid: f6bb9da1255ba034786cc5ff5354a4d3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HintManager
+  m_EditorClassIdentifier: Assembly-CSharp::TipsManager
   messageText: {fileID: 962701113}
 --- !u!1 &464871672
 GameObject:
@@ -11423,7 +11426,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577653807}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -11446,7 +11449,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -11467,6 +11470,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9047018623419564231, guid: ca3c4f995c7c2974a91d56ee71ad09c3, type: 3}
   m_PrefabInstance: {fileID: 368954251}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1577653812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577653807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5025a7f292776c44db370373d0dda72e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TipsTrigger
+  message: "\u0447\u0442\u043E\u0431\u044B \u0437\u0430\u043B\u0435\u0437\u0442\u044C
+    \u043D\u0430 \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u0443 \u043D\u0430\u0436\u043C\u0438\u0442\u0435
+    space"
 --- !u!1001 &1581082057
 PrefabInstance:
   m_ObjectHideFlags: 0
