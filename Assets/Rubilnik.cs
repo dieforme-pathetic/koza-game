@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PickupItem : MonoBehaviour
 {
+    [Header("Настройки предмета")]
+    public string itemName = "Potion"; // Potion, Wrench, Switch
+    
     private bool isPickedUp = false;
     private Transform player;
     private SpriteRenderer spriteRenderer;
@@ -17,7 +20,7 @@ public class PickupItem : MonoBehaviour
         
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         
-        Debug.Log("✅ Рубильник появился в мире! (это сообщение должно быть ТОЛЬКО после ввода кода)");
+        Debug.Log($"✅ {itemName} появился в мире!");
     }
     
     void Update()
@@ -48,11 +51,16 @@ public class PickupItem : MonoBehaviour
         if (spriteRenderer != null)
             spriteRenderer.color = new Color(1, 1, 1, 0.7f);
         
-        Debug.Log("✅ Рубильник взят! Иди ко второму сундуку.");
+        Debug.Log($"✅ {itemName} взят!");
     }
     
     public bool IsPickedUp()
     {
         return isPickedUp;
+    }
+    
+    public string GetItemName()
+    {
+        return itemName;
     }
 }

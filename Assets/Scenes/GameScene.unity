@@ -156,6 +156,8 @@ MonoBehaviour:
   speed: 3
   grabRange: 0.3
   isDead: 0
+  respawnPoint: {fileID: 0}
+  interactionPrompt: {fileID: 0}
 --- !u!114 &7764428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,8 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   respawnDelay: 1
-  respawnPoint: {fileID: 0}
   sandTag: Ground
+  boatWallTag: BoatWall
   deathDelay: 0.1
 --- !u!95 &7764429
 Animator:
