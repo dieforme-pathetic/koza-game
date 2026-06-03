@@ -2,35 +2,25 @@ using UnityEngine;
 
 public class Teleport2 : MonoBehaviour
 {
-    [Header("Предметы для активации (перетащи из сцены)")]
-    public GameObject requiredItem1;
-    public GameObject requiredItem2;
+    [Header("Названия предметов для поиска")]
+    public string item1Name = "Wrench";  // Имя в PickupItem.itemName
+    public string item2Name = "Potion";
+    
+    [Header("Или теги (если не работает по имени)")]
+    public string item1Tag = "";
+    public string item2Tag = "";
     
     [Header("Настройки")]
-    public GameObject interactionPrompt;
     public Animator teleportAnimator;
     public string animatorBoolName = "TookItems";
     
-    [Header("Эффекты")]
     public ParticleSystem activationEffect;
     public AudioClip activationSound;
     
     private bool isActivated = false;
     private bool isPlayerNear = false;
-    
-    void Start()
-    {
-        if (interactionPrompt != null)
-            interactionPrompt.SetActive(false);
-        
-        // Проверяем наличие предметов при старте
-        if (requiredItem1 == null)
-            Debug.LogWarning("⚠️ requiredItem1 не назначен!");
-        if (requiredItem2 == null)
-            Debug.LogWarning("⚠️ requiredItem2 не назначен!");
-        if (teleportAnimator == null)
-            Debug.LogWarning("⚠️ teleportAnimator не назначен! (перетащи объект с Animator)");
-    }
+    private GameObject foundItem1;
+    private GameObject foundItem2;
     
     void Update()
     {
@@ -44,48 +34,17 @@ public class Teleport2 : MonoBehaviour
     
     void TryActivate()
     {
-        bool hasItem1 = false;
-        bool hasItem2 = false;
+        Debug.Log("=== ТЕЛЕПОРТ: проверка ===");
         
-        Debug.Log("🔍 Проверка предметов...");
+        // Ищем предметы в сцене
+        foundItem1 = FindItem(item1Name, item1Tag);
+        foundItem2 = FindItem(item2Name, item2Tag);
         
-        // Проверяем первый предмет
-        if (requiredItem1 != null)
-        {
-            PickupItem item1 = requiredItem1.GetComponent<PickupItem>();
-            if (item1 != null)
-            {
-                hasItem1 = item1.IsPickedUp();
-                Debug.Log($"Предмет 1: {requiredItem1.name}, поднят: {hasItem1}");
-            }
-            else
-            {
-                Debug.LogWarning($"⚠️ На {requiredItem1.name} нет компонента PickupItem!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ requiredItem1 не назначен!");
-        }
+        bool hasItem1 = CheckItem(foundItem1);
+        bool hasItem2 = CheckItem(foundItem2);
         
-        // Проверяем второй предмет
-        if (requiredItem2 != null)
-        {
-            PickupItem item2 = requiredItem2.GetComponent<PickupItem>();
-            if (item2 != null)
-            {
-                hasItem2 = item2.IsPickedUp();
-                Debug.Log($"Предмет 2: {requiredItem2.name}, поднят: {hasItem2}");
-            }
-            else
-            {
-                Debug.LogWarning($"⚠️ На {requiredItem2.name} нет компонента PickupItem!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ requiredItem2 не назначен!");
-        }
+        Debug.Log($"Предмет 1 ({item1Name}): найдено={foundItem1 != null}, поднят={hasItem1}");
+        Debug.Log($"Предмет 2 ({item2Name}): найдено={foundItem2 != null}, поднят={hasItem2}");
         
         if (hasItem1 && hasItem2)
         {
@@ -93,63 +52,59 @@ public class Teleport2 : MonoBehaviour
         }
         else
         {
-            Debug.Log($"❌ Телепорт не активирован! Нужно принести оба предмета! (1:{hasItem1}, 2:{hasItem2})");
+            if (!hasItem1) Debug.Log($"❌ НЕ ХВАТАЕТ: {item1Name}");
+            if (!hasItem2) Debug.Log($"❌ НЕ ХВАТАЕТ: {item2Name}");
         }
+    }
+    
+    GameObject FindItem(string itemName, string itemTag)
+    {
+        // Ищем по тегу
+        if (!string.IsNullOrEmpty(itemTag))
+        {
+            GameObject tagged = GameObject.FindGameObjectWithTag(itemTag);
+            if (tagged != null)
+            {
+                PickupItem p = tagged.GetComponent<PickupItem>();
+                if (p != null) return tagged;
+            }
+        }
+        
+        // Ищем по имени в PickupItem
+        PickupItem[] allItems = FindObjectsOfType<PickupItem>();
+        foreach (PickupItem item in allItems)
+        {
+            if (item.GetItemName() == itemName)
+                return item.gameObject;
+        }
+        
+        return null;
+    }
+    
+    bool CheckItem(GameObject item)
+    {
+        if (item == null) return false;
+        PickupItem pickup = item.GetComponent<PickupItem>();
+        if (pickup == null) return false;
+        return pickup.IsPickedUp();
     }
     
     void ActivateTeleport()
     {
         isActivated = true;
-        
         Debug.Log("✅ ТЕЛЕПОРТ АКТИВИРОВАН!");
         
-        // Включаем анимацию
         if (teleportAnimator != null)
-        {
             teleportAnimator.SetBool(animatorBoolName, true);
-            Debug.Log($"🎬 Аниматор: {animatorBoolName} = true");
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ teleportAnimator не назначен! Анимация не будет работать.");
-        }
         
-        // Эффекты
         if (activationEffect != null)
-        {
             activationEffect.Play();
-            Debug.Log("✨ Эффект активации!");
-        }
         
         if (activationSound != null)
-        {
             AudioSource.PlayClipAtPoint(activationSound, transform.position);
-            Debug.Log("🔊 Звук активации!");
-        }
         
-        // Удаляем предметы (только если они подняты)
-        if (requiredItem1 != null)
-        {
-            PickupItem item1 = requiredItem1.GetComponent<PickupItem>();
-            if (item1 != null && item1.IsPickedUp())
-            {
-                Destroy(requiredItem1);
-                Debug.Log($"🗑️ Предмет {requiredItem1.name} удалён");
-            }
-        }
-        
-        if (requiredItem2 != null)
-        {
-            PickupItem item2 = requiredItem2.GetComponent<PickupItem>();
-            if (item2 != null && item2.IsPickedUp())
-            {
-                Destroy(requiredItem2);
-                Debug.Log($"🗑️ Предмет {requiredItem2.name} удалён");
-            }
-        }
-        
-        if (interactionPrompt != null)
-            interactionPrompt.SetActive(false);
+        if (foundItem1 != null) Destroy(foundItem1);
+        if (foundItem2 != null) Destroy(foundItem2);
     }
     
     void OnTriggerEnter2D(Collider2D other)
@@ -157,11 +112,7 @@ public class Teleport2 : MonoBehaviour
         if (other.CompareTag("Player") && !isActivated)
         {
             isPlayerNear = true;
-            
-            if (interactionPrompt != null)
-                interactionPrompt.SetActive(true);
-            
-            Debug.Log("🐐 Коза рядом с телепортом! Нажми E, если есть оба предмета.");
+            Debug.Log("🐐 Коза рядом с телепортом! Нажми E");
         }
     }
     
@@ -170,9 +121,6 @@ public class Teleport2 : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNear = false;
-            
-            if (interactionPrompt != null)
-                interactionPrompt.SetActive(false);
         }
     }
     

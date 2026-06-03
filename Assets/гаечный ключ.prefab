@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4502886058320086552}
   m_Layer: 0
   m_Name: "\u0433\u0430\u0435\u0447\u043D\u044B\u0439 \u043A\u043B\u044E\u0447"
-  m_TagString: Untagged
+  m_TagString: Wrench
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
