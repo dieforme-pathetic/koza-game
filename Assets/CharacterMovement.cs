@@ -31,7 +31,6 @@ public class CharacterMovement : MonoBehaviour
         transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
         rb.gravityScale = 0f;
     
-        // ОТКЛЮЧАЕМ ФИЗИКУ С МОНСТРАМИ
         Collider2D playerCollider = GetComponent<Collider2D>();
         SleepingMonster[] monsters = FindObjectsOfType<SleepingMonster>();
         foreach (var monster in monsters)
@@ -51,7 +50,6 @@ public class CharacterMovement : MonoBehaviour
     {
         if (isDead) return;
     
-        // ========== ЛОГИКА ЛОДКИ (когда внутри) ==========
         if (currentBoat != null)
         {
             Vector2 boatMovement = new Vector2(
@@ -61,7 +59,6 @@ public class CharacterMovement : MonoBehaviour
         
             currentBoat.SetMovementInput(boatMovement);
         
-            // ВЫХОД из лодки по ПРОБЕЛУ (теперь тоже пробел)
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ExitBoat();
@@ -69,25 +66,19 @@ public class CharacterMovement : MonoBehaviour
             return;
         }
     
-        // Обновляем UI подсказку
         if (interactionPrompt != null)
         {
             interactionPrompt.SetActive(nearbyBoat != null);
         }
     
-        // ========== ЛОГИКА ПЛАТФОРМЫ И ЛОДКИ (ПРОБЕЛ) ==========
-    
-        // НАЖАТИЕ ПРОБЕЛА (один раз)
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            // Сначала проверяем - есть ли лодка рядом
             if (nearbyBoat != null)
             {
                 BoardBoat(nearbyBoat);
-                return; // Выходим, чтобы не приклеиваться к платформе
+                return;
             }
         
-            // Если лодки нет - приклеиваемся к платформе
             if (!isHolding)
             {
                 isHolding = true;
@@ -95,7 +86,6 @@ public class CharacterMovement : MonoBehaviour
             }
         }
     
-        // ОТПУСКАНИЕ ПРОБЕЛА (для отклеивания от платформы)
         if (Input.GetKeyUp(KeyCode.Space))
         {
             if (isHolding)
@@ -105,7 +95,6 @@ public class CharacterMovement : MonoBehaviour
             }
         }
     
-        // Движение
         movement = new Vector2(
             Input.GetAxisRaw("Horizontal"),
             Input.GetAxisRaw("Vertical")
@@ -141,7 +130,6 @@ public class CharacterMovement : MonoBehaviour
         }
     }
     
-    // ========== МЕТОДЫ ДЛЯ ПЛАТФОРМЫ ==========
     private void TryAttachToPlatform()
     {
         Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, grabRange);
@@ -172,7 +160,6 @@ public class CharacterMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
     }
     
-    // ========== МЕТОДЫ ДЛЯ ЛОДКИ ==========
     public void SetNearbyBoat(Boat boat, bool isNear)
     {
         if (currentBoat != null) return;
@@ -232,7 +219,6 @@ public class CharacterMovement : MonoBehaviour
         return attachedPlatform == platform && isHolding;
     }
     
-    // ========== СМЕРТЬ ОТ МОНСТРА ==========
     public void DieByMonster()
     {
         if (isDead) return;
@@ -247,7 +233,7 @@ public class CharacterMovement : MonoBehaviour
             col.enabled = false;
         
         if (animator != null)
-            animator.SetTrigger("Drowning");
+            animator.SetTrigger("Death");
         
         if (attachedPlatform != null)
         {
@@ -278,7 +264,6 @@ public class CharacterMovement : MonoBehaviour
             t += 0.12f;
         }
         
-        // Находим точку респавна
         Vector3 respawnPos;
         if (respawnPoint != null)
         {
@@ -293,10 +278,8 @@ public class CharacterMovement : MonoBehaviour
                 respawnPos = Vector3.zero;
         }
         
-        // Перемещаем козу
         transform.position = respawnPos;
         
-        // Перемещаем все лодки
         Boat[] allBoats = FindObjectsOfType<Boat>();
         foreach (Boat boat in allBoats)
         {
@@ -337,23 +320,20 @@ public class CharacterMovement : MonoBehaviour
         Debug.Log("Коза возродилась!");
     }
     
-    // ========== АНИМАЦИЯ ==========
+    // ========== АНИМАЦИЯ (рабочая) ==========
     private void UpdateAnimations()
     {
         if (animator == null) return;
-    
-        float currentSpeed = movement.magnitude;
-        animator.SetFloat("speed", currentSpeed);
-    
-        if (sr == null) sr = GetComponent<SpriteRenderer>();
-    
+
+        animator.SetFloat("speed", movement.magnitude);
+
         if (movement.x > 0.01f)
         {
-            sr.flipX = false;
+            animator.Play("анимация козы бежит");
         }
         else if (movement.x < -0.01f)
         {
-            sr.flipX = true;
+            animator.Play("коза бежит флип");
         }
     }
     
