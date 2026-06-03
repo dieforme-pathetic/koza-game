@@ -1114,7 +1114,7 @@ GameObject:
   - component: {fileID: 158617810}
   - component: {fileID: 158617812}
   - component: {fileID: 158617811}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: "\u0438\u0433\u0440\u043E\u043A \u043A\u043E\u0437\u0430"
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1130,7 +1130,7 @@ Transform:
   m_GameObject: {fileID: 158617798}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.39, y: -2.22, z: 0}
+  m_LocalPosition: {x: -3.059, y: -3.032, z: 0}
   m_LocalScale: {x: 0.1113362, y: 0.110954285, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1208,7 +1208,7 @@ Rigidbody2D:
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!212 &158617809
 SpriteRenderer:
   serializedVersion: 2
@@ -1260,7 +1260,7 @@ SpriteRenderer:
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6773256895269092491, guid: 3cf77504dce8fb04caf9ea4433e7c974, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 3.35, y: 5.09}
@@ -6461,6 +6461,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &800504700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 800504701}
+  m_Layer: 0
+  m_Name: "\u0440\u0435\u0441\u043F\u0430\u0432\u043D \u043A\u043E\u0437\u044B"
+  m_TagString: Respawn
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &800504701
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800504700}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.352, y: -3.091, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &821296409
 GameObject:
   m_ObjectHideFlags: 0
@@ -16559,3 +16590,4 @@ SceneRoots:
   - {fileID: 1245289025}
   - {fileID: 507165707}
   - {fileID: 123477205}
+  - {fileID: 800504701}
